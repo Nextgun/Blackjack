@@ -1,27 +1,84 @@
 #include <iostream>
+#include <iomanip>
 
 using namespace std;
 
-// Function Prototypes
-//
-// Function 1 - print board state (use iomanip + setw)
 
-//
+struct Card{
+    char suit;
+    char value;
+    string display;
+
+};
 
 // Our Classes for Blackjack
 class Player
 {
     private:
         string name;
-        string cards[15];           // Array that hold the cards
-        double moneyAmt;            // total available money - current bet
-        double betAmt;              // money taken from total for current round of Blackjack
+        int numCards;
+        Card hand[15];              // Array that hold the player's hand
+        int total = 0;                  // Total value of the cards
+        double moneyAmt;                // total available money - current bet
+        double betAmt;                  // money taken from total for current round of Blackjack
     public:
-        void placeBet();            // Function 2 -	how much you gonna bet?
-        void checkHand();           // Function 7 -	check if bust;
-                                    // calculates value of the hand, checks for a bust or win.
+        string getName(){return name;}
+        void printHand();
+        double getMoneyAmt(){return moneyAmt;}
+        double getBetAmt(){return betAmt;}
+        void dealOneCard(Card[]);
+        void placeBet();                // Function 2 -	how much you gonna bet?
+        bool checkHand();               // Function 7 -	check if bust;
+                                        // calculates value of the hand, checks for a bust or win.
 
 };
+
+void Player::printHand()
+{
+    for(int count = 0; count < numCards; count++)
+    {
+        cout << hand[count].display << ", ";
+    }
+}
+
+void Player::dealOneCard(Card deck[])
+{
+    int i;
+    srand(time(NULL));
+    do{
+        i = rand() % 52;
+    }while(deck[i].suit == 0);
+
+    hand[numCards] = deck[i];
+    deck[i] = {0,'0',"0"};
+    switch(hand[numCards].value){
+        case '2': total += 2;
+        break;
+        case '3': total += 3;
+        break;
+        case '4': total += 4;
+        break;
+        case '5': total += 5;
+        break;
+        case '6': total += 6;
+        break;
+        case '7': total += 7;
+        break;
+        case '8': total += 8;
+        break;
+        case '9': total += 9;
+        break;
+        case 'X':
+        case 'J':
+        case 'Q':
+        case 'K': total += 10;
+        break;
+    }
+    numCards++;
+
+
+
+}
 
 //*******************************************************
 // placeBet                                             *
@@ -38,24 +95,42 @@ void Player::placeBet()
 // will calculate value of hand and                     *
 // determine if a bust, a win, or nothing happened      *
 //*******************************************************
-void Player::checkHand()
+bool Player::checkHand()
 {
-    // write code for function
+    if (total >= 21)
+        return true;
+    else return false;
 }
 
 class Dealer
 {
     private:
-        string cards[15];
+        string name = "Dealer";
+        int numCards;
+        Card hand[15];              //the dealer's hand
+        int total;                  // the total value of the dealer's hand
         int countHiddenCard = 1;    // keep track so that dealers second card remains hidden
     public:
+        string getName(){return name;}
+        void printHand();
         void dealcards(int numPlayer);  // Function 3 -	deal cards (note: have a counter so when second card dealt, make it  face  down for the dealers hand)
         void dealOneCard();
         void revealHiddenCard();
-        void checkHand();           // Function 7 -	check if bust;
+        bool checkHand();           // Function 7 -	check if bust;
                                     // calculates value of the hand, checks for a bust or win.
+        void setDeck();          // calculates value of the hand, checks for a bust or win.
+        Card deck[52];              // The deck
 
 };
+
+void Dealer::printHand()
+{
+    for(int count = 0; count < numCards; count++)
+    {
+        cout << setw(25) << hand[count].display << ", ";
+    }
+    cout << endl;
+}
 
 //*******************************************************
 // dealcards                                            *
@@ -85,8 +160,41 @@ void Dealer::dealcards(int numPlayer)
 //*******************************************************
 void Dealer::dealOneCard()
 {
-    // write code for function
+    int i;
+    srand(time(NULL));
+    do{
+        i = rand() % 52;
+    }while(deck[i].suit == 0);
+
+    hand[numCards] = deck[i];
+    deck[i] = {0,'0',"0"};
+    switch(hand[numCards].value){
+        case '2': total += 2;
+        break;
+        case '3': total += 3;
+        break;
+        case '4': total += 4;
+        break;
+        case '5': total += 5;
+        break;
+        case '6': total += 6;
+        break;
+        case '7': total += 7;
+        break;
+        case '8': total += 8;
+        break;
+        case '9': total += 9;
+        break;
+        case '10':
+        case 'J':
+        case 'Q':
+        case 'K': total += 10;
+        break;
+    }
+    numCards++;
+
 }
+
 
 //*******************************************************
 // revealHiddenCard                                     *
@@ -103,29 +211,36 @@ void Dealer::revealHiddenCard()
 // will calculate value of hand and                     *
 // determine if a bust, a win, or nothing happened      *
 //*******************************************************
-void Dealer::checkHand()
+bool Dealer::checkHand()
 {
-    // write code for function
+    if (total >= 21)
+        return true;
+    else return false;
 }
 
+// Function Prototypes
+//
+void printBoardState(Dealer dealer, Player player1, Player player2, Player player3, Player player4); //Function 1 - print board state (use iomanip + setw)
 
+//
 int main()
 {
+
     // title screen code
 
     // gameplay code
+    int numOfPlayers = 4;
 
     // default 4 players
     // initialize
-    Player player1;
-    Player player2;
-    Player player3;
-    Player player4;
-    // make player list a vector (i think)
-    // use pointers to create players, pass by pointer, dynamically create
-    // gonna need everyones help on it -hector
+    Player playerList[numOfPlayers];
+
 
     Dealer theDealer;               // The games dealer (comp)
+
+
+    printBoardState(theDealer, playerList[0], playerList[1], playerList[2], playerList[3]);
+
 
     // variable creation
     char playAgain;
@@ -135,6 +250,28 @@ int main()
     do
     {
         // write game code here
+        for(int count = 0; count < numOfPlayers; count++)
+        {
+            // ask for name
+            // ask for bet
+        }
+
+      //  while ()    // maybe doesnt even need a loop tbh
+      //  {
+            //draw board
+            // dealer deals 2 cards each
+
+            for(int count = 0; count < numOfPlayers; count++)
+            {
+                // ask for hit or stand
+                // call function for bust or win
+            }
+
+            // dealer reveals second card
+            // calc bust or win
+            // calc money earned or lost
+     //   }
+
 
         // ask to play again
         cout << "Would you like to play again? (Type 'Y' for yes, anything else to close.) " << endl;
@@ -168,7 +305,42 @@ void drawTitle()
 
 // write function header, include which team member wrote it.
 // Author:
-void drawBoard()
+void printBoardState(Dealer dealer, Player player1, Player player2, Player player3, Player player4)  // parameters will include 5 objects
 {
-    // write code here
+    // code here
+    cout << endl;
+    cout << endl;
+    cout << endl;
+    cout << endl;
+    cout << setw(25) << dealer.getName() << endl;
+    dealer.printHand();
+    cout << endl;
+    cout << endl;
+    cout << endl;
+    cout << setw(10) << player1.getName() << setw(10) << player2.getName()
+         << setw(10) << player3.getName() << setw(10) << player4.getName() << endl;
+
+   player1.printHand();
+   player2.printHand();
+   player3.printHand();
+   player4.printHand();
+//    << setw(10) << player2.printHand()
+//         << setw(10) << player3.printHand() << setw(10) << player4.printHand() << endl;
+
+    cout << setw(10) << player1.getMoneyAmt() << "," << player1.getBetAmt()
+         << setw(10) << player2.getMoneyAmt() << "," << player2.getBetAmt()
+         << setw(10) << player3.getMoneyAmt() << "," << player3.getBetAmt()
+         << setw(10) << player4.getMoneyAmt() << "," << player4.getBetAmt() << endl;
+    cout << endl;
+    cout << endl;
+    cout << endl;
+    cout << endl;
+}
+
+
+// write function header, include which team member wrote it.
+// Author:
+void drawEnd()
+{
+    // draw end screen
 }
